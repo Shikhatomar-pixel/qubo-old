@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabbed Interface with URL Update</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #f0f0f0;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .tab-button.active {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tabs">
+    <button class="tab-button active" data-tab="home">Home</button>
+    <button class="tab-button" data-tab="SmartHome">SmartHome</button>
+    <button class="tab-button" data-tab="vdb">VDB</button>
+    <button class="tab-button" data-tab="Indoor%20Camera">Indoor Camera</button>
+  </div>
+
+  <div id="home" class="tab-content active">
+    <img src="https://d3b4nwfy34ee2t.cloudfront.net/assets/images/demo-folder/home-page.png" alt="Home">
+  </div>
+  <div id="SmartHome" class="tab-content">
+    <img src="https://d3b4nwfy34ee2t.cloudfront.net/assets/images/demo-folder/smart-home.png" alt="SmartHome">
+  </div>
+  <div id="vdb" class="tab-content">
+    <img src="https://d3b4nwfy34ee2t.cloudfront.net/assets/images/demo-folder/video-doorbell.png" alt="VDB">
+  </div>
+  <div id="Indoor%20Camera" class="tab-content">
+    <img src="https://d3b4nwfy34ee2t.cloudfront.net/assets/images/demo-folder/Indoor-camera.png" alt="Indoor Camera">
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+
+    function showTab(tabName) {
+      // Show content
+      contents.forEach(c => {
+        c.classList.toggle('active', c.id === tabName);
+      });
+
+      // Highlight button
+      buttons.forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tabName);
+      });
+
+      // Update URL
+      const urlPath = decodeURIComponent(tabName);
+      history.pushState(null, '', '/' + urlPath);
+    }
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabName = button.dataset.tab;
+        showTab(tabName);
+      });
+    });
+
+    // Optional: Handle back/forward browser buttons
+    window.addEventListener('popstate', () => {
+      const path = window.location.pathname.slice(1) || 'home';
+      showTab(path);
+    });
+
+    // On load: Show tab based on URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const initialTab = decodeURIComponent(window.location.pathname.slice(1)) || 'home';
+      showTab(initialTab);
+    });
+  </script>
+</body>
+</html>
